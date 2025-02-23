@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategorySubIndexRequest;
 use App\Http\Requests\CategorySubRequest;
 use App\Interfaces\ProductCategoryInterface;
 use App\Models\CategorySub;
@@ -34,7 +35,7 @@ class CategorySubController extends Controller
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
-    
+
     public function index(CategorySubIndexRequest $request)
     {
         try {

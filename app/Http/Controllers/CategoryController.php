@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryIndexRequest;
 use App\Http\Requests\CategoryRequest;
 use App\Interfaces\ProductCategoryInterface;
 use Illuminate\Support\Facades\DB;
