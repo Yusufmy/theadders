@@ -21,10 +21,17 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
+            
             $validatedData = $request->validated();
-            $subCategory = $this->productCategoryRepository->storeProduct($validatedData);
+    
+            if ($request->hasFile('thumbail')) {
+                $validatedData['thumbail'] = $request->file('thumbail')->store('product_images', 'public');
+            }
+    
+            $product = $this->productCategoryRepository->storeProduct($validatedData);
+    
             DB::commit();
-            return response()->json($subCategory, 201);
+            return response()->json($product, 201);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json(['error' => $th->getMessage()], 500);

@@ -9,25 +9,24 @@ use App\Models\CategorySub;
 
 class ProductCategoryRepository implements ProductCategoryInterface
 {
-    public function storeProduct($product)
+    public function storeProduct($productData)
     {
-        // Implementasi untuk menyimpan produk
         try {
-            return $product = Product::create([
-                'category_id' => $product['category_id'],
-                'category_sub_id' => $product['category_sub_id'],
-                'product_name' => $product['product_name'],
-                'description' => $product['description'],
-                'thumbail' => $product['thumbail'],
-                'price' => $product['price'],
-                'start_price' => $product['start_price'],
-                'end_price' => $product['end_price'],
-                'year_release' => $product['year_release'],
-                'buy_release' => $product['buy_release'],
-                'item_codition' => $product['item_codition'],
-                'view_count' => $product['view_count'],
+            return Product::create([
+                'category_id' => $productData['category_id'],
+                'category_sub_id' => $productData['category_sub_id'],
+                'product_name' => $productData['product_name'],
+                'description' => $productData['description'] ?? null,
+                'thumbail' => $productData['thumbail'] ?? null,
+                'price' => $productData['price'],
+                'start_price' => $productData['start_price'] ?? null,
+                'end_price' => $productData['end_price'] ?? null,
+                'year_release' => $productData['year_release'] ?? null,
+                'buy_release' => $productData['buy_release'] ?? null,
+                'item_codition' => $productData['item_codition'] ?? null,
+                'view_count' => $productData['view_count'] ?? 0,
                 'author' => 'system',
-                'status' => $product['status'],
+                'status' => $productData['status'],
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Unable to store product: ' . $e->getMessage()], 500);

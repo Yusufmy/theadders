@@ -28,7 +28,7 @@ class ProductRequest extends FormRequest
             'category_sub_id' => 'nullable|integer|exists:mst_category_sub,category_sub_id',
             'product_name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'thumbail' => 'nullable|url',
+            'thumbail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'nullable|numeric|min:0',
             'start_price' => 'nullable|numeric|min:0',
             'end_price' => 'nullable|numeric|min:0',
