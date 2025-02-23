@@ -34,4 +34,18 @@ class CategorySubController extends Controller
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
+    
+    public function index(CategorySubIndexRequest $request)
+    {
+        try {
+            $subCategory = $this->productCategoryRepository->getSubCategories([
+                'search' => $request->input('search'),
+                'per_page' => $request->input('per_page'),
+            ]);
+
+            return response()->json($subCategory, 200);
+            } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
+    }
 }

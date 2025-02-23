@@ -30,4 +30,18 @@ class CategoryController extends Controller
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
+
+    public function index(CategoryIndexRequest $request)
+    {
+        try {
+            $categories = $this->productCategoryRepository->getCategories([
+                'search' => $request->input('search'),
+                'per_page' => $request->input('per_page'),
+            ]);
+
+            return response()->json($categories, 200);
+            } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
+    }
 }

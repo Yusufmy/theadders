@@ -85,4 +85,33 @@ class ProductCategoryRepository implements ProductCategoryInterface
 
         return $query->get();
     }
+
+    public function getCategories(array $filters)
+    {
+        $query = Categories::query();
+
+        if(!empty($filters['search'])){
+            $query->where('category_name', 'like', '%'.$filters['search'].'%');
+        }
+
+        if (isset($filters['per_page'])) {
+            return $query->paginate($filters['per_page']);
+        }
+
+        return $query->get();
+    }
+
+    public function getSubCategories(array $filters)
+    {
+        $query = CategorySub::query();
+
+        if(!empty($filters['search'])){
+            $query->where('category_name', 'like', '%'.$filters['search'].'%');
+        }
+        if (isset($filters['per_page'])) {
+            return $query->paginate($filters['per_page']);
+        }
+
+        return $query->get();
+    }
 }

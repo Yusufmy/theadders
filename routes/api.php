@@ -36,6 +36,10 @@ Route::middleware(JwtMiddleware::class)->group(function () {
     Route::post('/product', [ProductController::class, 'storeProduct']);
 });
 
+Route::get('/category-subs', [CategorySubController::class, 'index']);
+Route::get('/categories', [CategoryController::class, 'index']);
+
+
     // product end
 
 // });
