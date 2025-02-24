@@ -30,7 +30,7 @@ class AuthController extends Controller
             }
     
             $payloadUser = [
-                'fullname' => strlen($req->fullname),
+                'fullname' => $req->fullname,
                 'email' => $req->email,
                 'phone' => $req->phone,
                 'status' => '1',
