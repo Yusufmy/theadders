@@ -31,12 +31,16 @@ class ProductController extends Controller
             $product = $this->productCategoryRepository->storeProduct($validatedData);
     
             DB::commit();
-            return response()->json($product, 201);
+            return response()->json([
+                'message' => 'success',
+                'product' => $product
+            ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
+    
 
     public function index(ProductIndexRequest $request)
     {
@@ -44,7 +48,10 @@ class ProductController extends Controller
             $validatedData = $request->validated();
     
             $products = $this->productCategoryRepository->getProducts($validatedData);
-            return response()->json($products, 200);
+            return response()->json([
+                'message' =>'success',
+                'products' => $products
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }

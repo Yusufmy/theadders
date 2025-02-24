@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CategoryIndexRequest;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\CategoryIndexRequest;
 use App\Interfaces\ProductCategoryInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -23,10 +23,13 @@ class CategoryController extends Controller
             DB::beginTransaction();
 
             $validatedData = $request->validated();
-            $subCategory = $this->productCategoryRepository->storeCategory($validatedData);
+            $category = $this->productCategoryRepository->storeCategory($validatedData);
             DB::commit();
-            return response()->json($subCategory, 201);
-        } catch (\Throwable $th) {
+            return response()->json([
+                'category' => $category,
+                "message" => "success"
+            ], 201);
+            } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -40,7 +43,10 @@ class CategoryController extends Controller
                 'per_page' => $request->input('per_page'),
             ]);
 
-            return response()->json($categories, 200);
+            return response()->json([
+                'categories' => $categories,
+                "message" => "success"
+            ], 200);
             } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }

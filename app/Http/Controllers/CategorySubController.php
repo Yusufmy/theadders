@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CategorySubIndexRequest;
 use App\Http\Requests\CategorySubRequest;
+use App\Http\Requests\CategorySubIndexRequest;
 use App\Interfaces\ProductCategoryInterface;
 use App\Models\CategorySub;
 use App\Models\Category;
@@ -29,7 +29,11 @@ class CategorySubController extends Controller
 
             $subCategory = $this->productCategoryRepository->storeSubCategory($validatedData);
             DB::commit();
-            return response()->json($subCategory, 201);
+
+            return response()->json([
+                'category_sub' => $subCategory,
+                "message" => "success"
+            ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json(['error' => $th->getMessage()], 500);
@@ -44,7 +48,10 @@ class CategorySubController extends Controller
                 'per_page' => $request->input('per_page'),
             ]);
 
-            return response()->json($subCategory, 200);
+            return response()->json([
+                'category_subs' => $subCategory,
+                "message" => "success"
+            ], 200);
             } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
