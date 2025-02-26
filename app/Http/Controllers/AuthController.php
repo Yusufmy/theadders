@@ -11,6 +11,7 @@ use App\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UpdateProfileRequest;
 
 class AuthController extends Controller
 {
@@ -88,5 +89,30 @@ class AuthController extends Controller
             return response()->json(['error' => 'An error occurred: ' . $ex->getMessage()], 500);
         }
     }
+
+    public function updateProfile(UpdateProfileRequest $request)
+        {
+            try {
+                $userData = $request->validated();
+                
+                if ($request->hasFile('avatar')) {
+                    $userData['avatar'] = $request->file('avatar')->store('avatars', 'public');
+                }
+    
+                $user = $this->userRepositoryInterface->updateProfile(auth()->id(), $userData);
+    
+                return ApiResponseClass::sendResponse(
+                    new UserResource($user), 
+                    "success", 
+                    200
+                );
+            } catch (\Exception $e) {
+                return ApiResponseClass::sendResponse(
+                    null, 
+                    "An error occurred: " . $e->getMessage(), 
+                    500
+                );
+            }
+        }
     
 }

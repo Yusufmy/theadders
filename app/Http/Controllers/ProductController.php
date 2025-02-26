@@ -56,4 +56,22 @@ class ProductController extends Controller
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
+
+    public function myProducts(ProductIndexRequest $request)
+        {
+            try {
+                $products = $this->productCategoryRepository->getUserProducts($request->validated());
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => $products,
+                    'message' => 'success'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error retrieving products: ' . $e->getMessage()
+                ], 500);
+            }
+        }
 }

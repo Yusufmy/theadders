@@ -39,6 +39,16 @@ Route::middleware(JwtMiddleware::class)->group(function () {
 Route::get('/category-subs', [CategorySubController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 
+Route::middleware('auth:api')->group(function () {
+    Route::post('/profile/update', [AuthController::class, 'updateProfile']);
+});
+
+Route::middleware(JwtMiddleware::class)->group(function () {
+    Route::post('/product', [ProductController::class, 'storeProduct']);
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/my-products', [ProductController::class, 'myProducts']);
+});
+
 
     // product end
 

@@ -67,9 +67,22 @@ class ProductCategoryRepository implements ProductCategoryInterface
         }
     }
 
+    public function getUserProducts(array $filters)
+        {
+            $query = Product::with(['category', 'categorySub'])
+                ->where('author', auth()->id());
+    
+            if (isset($filters['per_page'])) {
+                return $query->paginate($filters['per_page']);
+            }
+    
+            return $query->get();
+        }
+
     public function getProducts(array $filters)
     {
         $query = Product::with(['category', 'categorySub'])
+            ->where('author', '!=', auth()->id())
             ->filter([
                 'category_id' => $filters['category_id'] ?? null,
                 'category_sub_id' => $filters['category_sub_id'] ?? null,
