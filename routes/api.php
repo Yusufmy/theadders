@@ -49,6 +49,10 @@ Route::middleware(JwtMiddleware::class)->group(function () {
     Route::get('/my-products', [ProductController::class, 'myProducts']);
 });
 
+Route::middleware('auth:api')->group(function () {
+    Route::get('/profile', [AuthController::class, 'getProfile']);
+    Route::post('/profile/update', [AuthController::class, 'updateProfile']);
+});
 
     // product end
 

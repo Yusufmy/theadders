@@ -114,5 +114,24 @@ class AuthController extends Controller
                 );
             }
         }
+
+
+        public function getProfile()
+        {
+            try {
+                $user = auth()->user();
+                return ApiResponseClass::sendResponse(
+                    new UserResource($user),
+                    "success",
+                    200
+                );
+            } catch (\Exception $e) {
+                return ApiResponseClass::sendResponse(
+                    null,
+                    "An error occurred: " . $e->getMessage(),
+                    500
+                );
+            }
+        }
     
 }
