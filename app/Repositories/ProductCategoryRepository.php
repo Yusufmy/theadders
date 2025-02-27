@@ -25,13 +25,14 @@ class ProductCategoryRepository implements ProductCategoryInterface
                 'buy_release' => $productData['buy_release'] ?? null,
                 'item_codition' => $productData['item_codition'] ?? null,
                 'view_count' => $productData['view_count'] ?? 0,
-                'author' => 'system',
+                'author' => auth()->id(),
                 'status' => $productData['status'],
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Unable to store product: ' . $e->getMessage()], 500);
+            throw new \Exception('Unable to store product: ' . $e->getMessage());
         }
     }
+
 
     public function storeCategory($category)
     {
@@ -46,7 +47,7 @@ class ProductCategoryRepository implements ProductCategoryInterface
 
             return $category;
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Unable to store category: ' . $e->getMessage()], 500);
+            throw new \Exception('Unable to store category: ' . $e->getMessage());
         }
     }
 
@@ -63,21 +64,10 @@ class ProductCategoryRepository implements ProductCategoryInterface
 
             return $subCategory;
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Unable to store sub-category: ' . $e->getMessage()], 500);
+            throw new \Exception('Unable to store sub category: ' . $e->getMessage());
         }
     }
 
-    public function getUserProducts(array $filters)
-        {
-            $query = Product::with(['category', 'categorySub'])
-                ->where('author', auth()->id());
-    
-            if (isset($filters['per_page'])) {
-                return $query->paginate($filters['per_page']);
-            }
-    
-            return $query->get();
-        }
 
     public function getProducts(array $filters)
     {
@@ -99,12 +89,24 @@ class ProductCategoryRepository implements ProductCategoryInterface
         return $query->get();
     }
 
+    public function getUserProducts(array $filters)
+    {
+        $query = Product::with(['category', 'categorySub'])
+            ->where('author', auth()->id());
+
+        if (isset($filters['per_page'])) {
+            return $query->paginate($filters['per_page']);
+        }
+
+        return $query->get();
+    }
+
     public function getCategories(array $filters)
     {
         $query = Categories::query();
 
-        if(!empty($filters['search'])){
-            $query->where('category_name', 'like', '%'.$filters['search'].'%');
+        if (!empty($filters['search'])) {
+            $query->where('category_name', 'like', '%' . $filters['search'] . '%');
         }
 
         if (isset($filters['per_page'])) {
@@ -118,8 +120,8 @@ class ProductCategoryRepository implements ProductCategoryInterface
     {
         $query = CategorySub::query();
 
-        if(!empty($filters['search'])){
-            $query->where('category_name', 'like', '%'.$filters['search'].'%');
+        if (!empty($filters['search'])) {
+            $query->where('category_name', 'like', '%' . $filters['search'] . '%');
         }
         if (isset($filters['per_page'])) {
             return $query->paginate($filters['per_page']);

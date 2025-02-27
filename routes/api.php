@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\JwtMiddleware;
+use App\Http\Controllers\ExchangeController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -56,4 +57,15 @@ Route::middleware('auth:api')->group(function () {
 
     // product end
 
+Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
+
+// exchange start
+Route::middleware('auth:api')->group(function () {
+    Route::post('/exchange', [ExchangeController::class, 'requestExchange']);
+    Route::put('/approve-exchange/{exchange_id}', [ExchangeController::class, 'approveExchange']);
+    Route::put('/decline-exchange/{exchange_id}', [ExchangeController::class, 'declineExchange']);
+    Route::get('/exchanges', [ExchangeController::class, 'getUserExchanges']);
+    Route::get('/exchange/{exchange_id}', [ExchangeController::class, 'getExchangeById']);
+});
+// exchange end
 // });

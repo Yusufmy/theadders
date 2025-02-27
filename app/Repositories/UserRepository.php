@@ -27,4 +27,19 @@ class UserRepository implements UserRepositoryInterface
             ->select('users.*', 'pw_users.password')
             ->first();
     }
+
+    public function updateProfile(int $userId, array $data)
+        {
+            $user = User::findOrFail($userId);
+            
+            if (isset($data['avatar']) && $user->avatar) {
+                $oldAvatar = public_path($user->avatar);
+                if (file_exists($oldAvatar)) {
+                    unlink($oldAvatar);
+                }
+            }
+    
+            $user->update($data);
+            return $user->fresh();
+        }
 }
