@@ -21,15 +21,15 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             $validatedData = $request->validated();
-    
+
             if ($request->hasFile('thumbail')) {
                 $validatedData['thumbail'] = $request->file('thumbail')->store('product_images', 'public');
             }
-    
+
             $product = $this->productCategoryRepository->storeProduct($validatedData);
-    
+
             DB::commit();
             return response()->json([
                 'message' => 'success',
@@ -40,17 +40,17 @@ class ProductController extends Controller
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
-    
+
 
     public function index(ProductIndexRequest $request)
     {
         try {
             $validatedData = $request->validated();
-    
+
             $products = $this->productCategoryRepository->getProducts($validatedData);
             return response()->json([
-                'message' =>'success',
-                'products' => $products
+                'message' => 'success',
+                'data' => $products
             ], 200);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
@@ -61,7 +61,7 @@ class ProductController extends Controller
         {
             try {
                 $products = $this->productCategoryRepository->getUserProducts($request->validated());
-                
+
                 return response()->json([
                     'success' => true,
                     'data' => $products,

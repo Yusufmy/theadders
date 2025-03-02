@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UpdateProfileRequest;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -29,14 +30,14 @@ class AuthController extends Controller
             if ($this->userRepositoryInterface->getUserByEmail($req->email)) {
                 return ApiResponseClass::sendResponse(null, "Email already exists", 400);
             }
-    
+
             $payloadUser = [
                 'fullname' => $req->fullname,
                 'email' => $req->email,
                 'phone' => $req->phone,
                 'status' => '1',
             ];
-    
+
             $payloadPwUser = [
                 'username' => $req->fullname,
                 'nama_lengkap' => $req->fullname,
@@ -47,38 +48,38 @@ class AuthController extends Controller
                 'updater' => 'system',
                 'status' => '1',
             ];
-    
+
             $user = $this->userRepositoryInterface->signUp($payloadUser, $payloadPwUser);
-    
+
             DB::commit();
             return ApiResponseClass::sendResponse(new UserResource($user), "success", 201);
         } catch (\Exception  $ex) {
             DB::rollBack();
             return ApiResponseClass::sendResponse(null, "An error occurred: " . $ex->getMessage(), 500);
         }
-    }    
-    
+    }
+
     public function login(LoginRequest $req)
     {
         $credentials = [
             'email' => $req->email,
             'password' => $req->password,
         ];
-    
+
         try {
             \Log::info('Login attempt for email: ' . $credentials['email']); // Debugging log
-    
+
             $user = $this->userRepositoryInterface->getUserByEmail($credentials['email']);
-    
+
             if (!$user || !Hash::check($req->password, $user->password)) {
                 \Log::warning('Invalid credentials for email: ' . $credentials['email']); // Log jika salah
                 return ApiResponseClass::sendResponse(null, "Invalid email or password", 401);
             }
-    
+
             $token = auth()->guard('api')->login($user);
-    
+
             \Log::info('Login successful for email: ' . $credentials['email']); // Log sukses
-    
+
             return response()->json([
                 'user' => new UserResource($user),
                 'token' => $token,
@@ -94,22 +95,22 @@ class AuthController extends Controller
         {
             try {
                 $userData = $request->validated();
-                
+
                 if ($request->hasFile('avatar')) {
                     $userData['avatar'] = $request->file('avatar')->store('avatars', 'public');
                 }
-    
+
                 $user = $this->userRepositoryInterface->updateProfile(auth()->id(), $userData);
-    
+
                 return ApiResponseClass::sendResponse(
-                    new UserResource($user), 
-                    "success", 
+                    new UserResource($user),
+                    "success",
                     200
                 );
             } catch (\Exception $e) {
                 return ApiResponseClass::sendResponse(
-                    null, 
-                    "An error occurred: " . $e->getMessage(), 
+                    null,
+                    "An error occurred: " . $e->getMessage(),
                     500
                 );
             }
@@ -146,5 +147,5 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'FCM token updated successfully']);
     }
-    
+
 }

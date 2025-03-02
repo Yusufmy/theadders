@@ -55,12 +55,12 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/profile/update', [AuthController::class, 'updateProfile']);
 });
 
-    // product end
+// product end
 
-Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
 
 // exchange start
 Route::middleware('auth:api')->group(function () {
+    Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
     Route::post('/exchange', [ExchangeController::class, 'requestExchange']);
     Route::put('/approve-exchange/{exchange_id}', [ExchangeController::class, 'approveExchange']);
     Route::put('/decline-exchange/{exchange_id}', [ExchangeController::class, 'declineExchange']);
